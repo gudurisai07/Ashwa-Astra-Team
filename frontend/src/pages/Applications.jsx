@@ -40,7 +40,7 @@ export default function Applications() {
     <>
       <div className="page-head">
         <div>
-          <h1>{isRecruiter ? 'Applicants' : 'My applications'}</h1>
+          <h1>{isRecruiter ? '👥 Applicants' : '📋 My Applications'}</h1>
           <p className="muted">{isRecruiter ? 'Review applicants for your jobs. Status changes are always your decision.' : 'Track every application and its status.'}</p>
         </div>
         <select className="input input-auto" value={filter} onChange={(e) => setFilter(e.target.value)} aria-label="Filter by status">

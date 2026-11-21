@@ -50,7 +50,7 @@ export default function Jobs() {
     <>
       <div className="page-head">
         <div>
-          <h1>{isRecruiter ? 'Your jobs' : 'Browse jobs'}</h1>
+          <h1>{isRecruiter ? '💼 Your Jobs' : '🔍 Browse Jobs'}</h1>
           <p className="muted">{isRecruiter ? 'Manage the roles you have posted.' : 'Search roles and filter by skill or experience.'}</p>
         </div>
         {isRecruiter && <Link to="/jobs/new" className="btn btn-primary">Post a job</Link>}

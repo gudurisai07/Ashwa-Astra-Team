@@ -37,6 +37,9 @@ public class Candidate {
     @Column(length = 255)
     private String profileImageUrl;
 
+    @Column(length = 255)
+    private String resumeFileName;
+
     @Column(length = 400)
     private String resumePath;
 

@@ -24,8 +24,8 @@ export default function RecruiterDashboard() {
   return (
     <>
       <div className="page-head">
-        <div><h1>Recruitment overview</h1><p className="muted">Your jobs and applicants.</p></div>
-        <Link to="/jobs/new" className="btn btn-primary">Post a job</Link>
+        <div><h1>📊 Recruitment Overview</h1><p className="muted">Your jobs and applicants.</p></div>
+        <Link to="/jobs/new" className="btn btn-primary">➕ Post a Job</Link>
       </div>
       <div className="stats">
         <StatCard label="Posted jobs" value={d.totalJobs} />

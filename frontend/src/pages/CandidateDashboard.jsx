@@ -52,10 +52,13 @@ export default function CandidateDashboard() {
     <>
       <div className="page-head">
         <div>
-          <h1>Hello, {user.fullName.split(' ')[0]}</h1>
-          <p className="muted">Your job search at a glance.</p>
+          <h1>👋 Hello, {user.fullName.split(' ')[0]}</h1>
+          <p className="muted">Your AI-powered job search at a glance.</p>
         </div>
-        <Link to="/jobs" className="btn btn-primary">Browse jobs</Link>
+        <div className="row">
+          <Link to="/resume-analyzer" className="btn btn-ghost">🤖 Analyze Resume</Link>
+          <Link to="/jobs" className="btn btn-primary">💼 Browse Jobs</Link>
+        </div>
       </div>
 
       <ErrorMessage message={stats.error} onRetry={stats.reload} />
@@ -64,6 +67,7 @@ export default function CandidateDashboard() {
         <StatCard label="Pending" value={s?.pending} tone="amber" />
         <StatCard label="Shortlisted" value={s?.shortlisted} tone="green" />
         <StatCard label="Resume score" value={s?.latestResumeScore ?? '–'} tone="violet" hint={s?.latestResumeScore == null ? 'Run the analyzer' : 'out of 100'} />
+        {s?.atsScore != null && <StatCard label="ATS Score" value={s.atsScore} tone="green" hint="ATS readiness" />}
       </div>
 
       <div className="two-col">

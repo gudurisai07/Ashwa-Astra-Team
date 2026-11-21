@@ -49,7 +49,7 @@ export default function InterviewPreparation() {
 
   return (
     <>
-      <div className="page-head"><div><h1>Interview Preparation</h1><p className="muted">Questions tailored to the job and your skills.</p></div></div>
+      <div className="page-head"><div><h1>🎤 Interview Preparation</h1><p className="muted">Questions tailored to the job and your skills.</p></div></div>
       <div className="card row wrap">
         <div className="grow"><JobPicker value={jobId} onChange={(v) => setParams(v ? { jobId: v } : {})} /></div>
         {jobId && <RunBar onRun={run} busy={busy} label="generator" hasResult={Boolean(result)} />}

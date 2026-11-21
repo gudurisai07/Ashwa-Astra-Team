@@ -58,9 +58,16 @@ export default function Register() {
 
   return (
     <div className="auth-page">
-      <form className="card auth-card" onSubmit={submit}>
-        <Link to="/" className="brand"><span className="brand-mark">S</span> SmartHire <span className="brand-ai">AI</span></Link>
-        <h2>Create your account</h2>
+      <form className="auth-card" onSubmit={submit}>
+        <div style={{textAlign:'center',marginBottom:'.5rem'}}>
+          <Link to="/" className="brand" style={{justifyContent:'center',fontSize:'1.3rem'}}>
+            <span className="brand-mark" style={{width:40,height:40,fontSize:'1.2rem',borderRadius:12}}>S</span>
+            SmartHire <span className="brand-ai">AI</span>
+          </Link>
+        </div>
+        <h2 style={{textAlign:'center'}}>Create your account ✨</h2>
+        <p className="muted center-text small" style={{marginTop:'-.5rem'}}>Join the AI-powered hiring platform</p>
+        <div className="gradient-divider" />
         <ErrorMessage message={error} />
 
         {/* Profile photo */}
@@ -103,8 +110,12 @@ export default function Register() {
         {form.role === 'RECRUITER' && (
           <label>Company name<input className="input" value={form.companyName} onChange={set('companyName')} /></label>
         )}
-        <button className="btn btn-primary btn-block" disabled={busy}>{busy ? 'Creating…' : 'Create account'}</button>
-        <p className="muted center-text">Already registered? <Link to="/login">Log in</Link></p>
+        <button className="btn btn-primary btn-block btn-lg" disabled={busy} style={{marginTop:'.5rem'}}>
+          {busy ? '⏳ Creating…' : '🚀 Create account'}
+        </button>
+        <p className="muted center-text" style={{fontSize:'.88rem'}}>
+          Already registered? <Link to="/login" style={{color:'var(--purple2)',fontWeight:600}}>Log in →</Link>
+        </p>
       </form>
     </div>
   );

@@ -20,28 +20,28 @@ export default function Home() {
         <ThreeBackground />
       </Suspense>
       <header className="landing-nav">
-        <div className="brand"><span className="brand-mark">S</span> SmartHire <span className="brand-ai">AI</span></div>
+        <div className="brand"><span className="brand-mark" style={{width:38,height:38,fontSize:'1.1rem',borderRadius:12}}>S</span> SmartHire <span className="brand-ai">AI</span></div>
         <div className="row">
           {user ? (
-            <Link className="btn btn-primary" to={dash}>Open dashboard</Link>
+            <Link className="btn btn-primary" to={dash}>🚀 Open Dashboard</Link>
           ) : (
             <>
               <Link className="btn btn-ghost" to="/login">Log in</Link>
-              <Link className="btn btn-primary" to="/register">Get started</Link>
+              <Link className="btn btn-primary" to="/register">Get started free →</Link>
             </>
           )}
         </div>
       </header>
       <section className="hero">
-        <span className="pill">AI-powered recruitment</span>
-        <h1>Hire smarter. Get hired faster.</h1>
+        <span className="pill">⚡ Powered by Google Gemini AI</span>
+        <h1>Hire smarter.<br />Get hired faster.</h1>
         <p>
-          SmartHire AI uses Gemini to analyse resumes, match candidates to roles and prepare interviews.
+          SmartHire AI uses Gemini to analyse resumes, match candidates to roles and prepare you for interviews.
           AI supports decisions; people make them.
         </p>
-        <div className="row center">
-          <Link className="btn btn-primary btn-lg" to={dash}>{user ? 'Go to dashboard' : 'Create free account'}</Link>
-          <Link className="btn btn-ghost btn-lg" to="/jobs">Browse jobs</Link>
+        <div className="row center" style={{gap:'1rem'}}>
+          <Link className="btn btn-primary btn-lg" to={dash}>{user ? '🚀 Go to Dashboard' : '✨ Create Free Account'}</Link>
+          <Link className="btn btn-ghost btn-lg" to="/jobs">💼 Browse Jobs</Link>
         </div>
       </section>
       <section className="features">

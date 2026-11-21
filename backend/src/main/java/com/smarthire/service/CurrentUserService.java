@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CurrentUserService {
@@ -28,19 +29,23 @@ public class CurrentUserService {
         User user = users.findByEmail(auth.getName())
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "User no longer exists"));
         if (Boolean.FALSE.equals(user.getActive())) {
-            // Deactivated accounts cannot authenticate
             throw new ApiException(HttpStatus.FORBIDDEN, "Account is deactivated");
         }
         return user;
     }
 
+    @Transactional
     public Candidate candidate() {
         User u = user();
         if (u.getRole() != User.Role.CANDIDATE) {
             throw ApiException.forbidden("Candidate account required");
         }
-        return candidates.findByUserId(u.getId())
-                .orElseThrow(() -> ApiException.notFound("Candidate profile not found"));
+        // Auto-create Candidate profile if it doesn't exist (e.g. users registered before migration)
+        return candidates.findByUserId(u.getId()).orElseGet(() -> {
+            Candidate c = new Candidate();
+            c.setUser(u);
+            return candidates.save(c);
+        });
     }
 
     public User recruiter() {

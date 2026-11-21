@@ -40,7 +40,7 @@ export default function ResumeImprovement() {
   return (
     <>
       <div className="page-head">
-        <div><h1>Resume Improvement</h1><p className="muted">ATS-friendly rewrites based on your actual resume. Review every line before using it.</p></div>
+        <div><h1>✨ Resume Improvement</h1><p className="muted">ATS-friendly rewrites based on your actual resume. Review every line before using it.</p></div>
         <RunBar onRun={run} busy={busy} label="improvement" hasResult={Boolean(r)} />
       </div>
       <ErrorMessage message={error} />

@@ -3,19 +3,19 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const candidateLinks = [
-  ['/candidate', 'Dashboard'],
-  ['/jobs', 'Browse Jobs'],
-  ['/applications', 'My Applications'],
-  ['/resume-analyzer', 'Resume Analyzer'],
-  ['/job-matching', 'Job Matching'],
-  ['/interview-prep', 'Interview Prep'],
-  ['/resume-improvement', 'Resume Improvement'],
+  ['/candidate',           '🏠', 'Dashboard'],
+  ['/jobs',                '💼', 'Browse Jobs'],
+  ['/applications',        '📋', 'My Applications'],
+  ['/resume-analyzer',     '🤖', 'Resume Analyzer'],
+  ['/job-matching',        '🎯', 'Job Matching'],
+  ['/interview-prep',      '🎤', 'Interview Prep'],
+  ['/resume-improvement',  '✨', 'Resume Improvement'],
 ];
 const recruiterLinks = [
-  ['/recruiter', 'Dashboard'],
-  ['/jobs', 'Jobs'],
-  ['/jobs/new', 'Post a Job'],
-  ['/applications', 'Applicants'],
+  ['/recruiter',    '📊', 'Dashboard'],
+  ['/jobs',         '💼', 'Jobs'],
+  ['/jobs/new',     '➕', 'Post a Job'],
+  ['/applications', '👥', 'Applicants'],
 ];
 
 export default function AppLayout() {
@@ -38,13 +38,20 @@ export default function AppLayout() {
         <div className="brand">
           <span className="brand-mark">S</span> SmartHire <span className="brand-ai">AI</span>
         </div>
+
+        <div className="nav-section-label">
+          {user?.role === 'RECRUITER' ? 'Recruiter Tools' : 'Candidate Tools'}
+        </div>
+
         <nav onClick={() => setOpen(false)}>
-          {links.map(([to, label]) => (
+          {links.map(([to, icon, label]) => (
             <NavLink key={to} to={to} end className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+              <span className="nav-icon">{icon}</span>
               {label}
             </NavLink>
           ))}
         </nav>
+
         <div className="sidebar-foot">
           <div className="user-chip">
             <div className="avatar">{user?.fullName?.[0]?.toUpperCase()}</div>
@@ -54,10 +61,11 @@ export default function AppLayout() {
             </div>
           </div>
           <button className="btn btn-ghost btn-block" onClick={onLogout}>
-            Log out
+            🚪 Log out
           </button>
         </div>
       </aside>
+
       <main className="content">
         <Outlet />
       </main>

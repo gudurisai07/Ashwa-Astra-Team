@@ -38,7 +38,7 @@ export default function JobMatching() {
   const b = result?.scoreBreakdown;
   return (
     <>
-      <div className="page-head"><div><h1>AI Job Matching</h1><p className="muted">Compare your real resume with a real job posting.</p></div></div>
+      <div className="page-head"><div><h1>🎯 AI Job Matching</h1><p className="muted">Compare your real resume with a real job posting.</p></div></div>
       <div className="card row wrap">
         <div className="grow"><JobPicker value={jobId} onChange={(v) => setParams(v ? { jobId: v } : {})} /></div>
         {jobId && <RunBar onRun={run} busy={busy} label="match" hasResult={Boolean(result)} />}

@@ -63,9 +63,13 @@ public class AiService {
         // Compute a simple ATS‑readiness score (0‑100) based on presence of key sections & keyword density
         int atsScore = computeAtsScore(result);
         result.put("atsReadinessScore", atsScore);
-        result.put("atsReadinessChecklist", List.of(
-                "Contains standard sections (Summary, Experience, Education)",
-                "Uses bullet points", "No tables or graphics", "Keyword density > 2%"));
+        // ATS checklist as a JSON array
+        com.fasterxml.jackson.databind.node.ArrayNode checklist = mapper.createArrayNode();
+        checklist.add("Contains standard sections (Summary, Experience, Education)");
+        checklist.add("Uses bullet points");
+        checklist.add("No tables or graphics");
+        checklist.add("Keyword density > 2%");
+        result.set("atsReadinessChecklist", checklist);
         result.put("qualityScore", score);
         ResumeAnalysis row = new ResumeAnalysis();
         row.setCandidate(c);

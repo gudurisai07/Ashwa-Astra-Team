@@ -44,7 +44,7 @@ export default function PostJob() {
 
   return (
     <>
-      <div className="page-head"><h1>{id ? 'Edit job' : 'Post a job'}</h1></div>
+      <div className="page-head"><h1>{id ? '✏️ Edit Job' : '➕ Post a New Job'}</h1></div>
       <form className="card form-grid" onSubmit={submit}>
         <ErrorMessage message={error} />
         <label>Job title<input className="input" required maxLength={200} value={form.title} onChange={set('title')} /></label>

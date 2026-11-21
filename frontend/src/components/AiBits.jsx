@@ -41,8 +41,8 @@ export function Disclaimer({ result }) {
 export function RunBar({ onRun, busy, label, hasResult }) {
   return (
     <div className="runbar">
-      <button className="btn btn-primary" onClick={onRun} disabled={busy}>
-        {busy ? 'Gemini is working…' : hasResult ? `Re-run ${label}` : `Run ${label}`}
+      <button className="btn btn-primary" onClick={onRun} disabled={busy} style={{minWidth:160}}>
+        {busy ? '⏳ Gemini is working…' : hasResult ? `🔄 Re-run ${label}` : `🚀 Run ${label}`}
       </button>
       {busy && <span className="spinner" aria-hidden="true" />}
     </div>
