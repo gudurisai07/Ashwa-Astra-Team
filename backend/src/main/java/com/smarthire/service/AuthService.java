@@ -48,6 +48,13 @@ public class AuthService {
         if (role == User.Role.CANDIDATE) {
             Candidate c = new Candidate();
             c.setUser(u);
+            // optional profile fields from request – may be null
+            c.setPhone(req.phone());
+            c.setHeadline(req.headline());
+            c.setLocation(req.location());
+            c.setExperienceYears(req.experienceYears());
+            c.setSkills(req.skills());
+            c.setProfileImageUrl(req.profileImageUrl());
             candidates.save(c);
         }
         return toResponse(u);

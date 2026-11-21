@@ -49,4 +49,7 @@ public class User {
     void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    @Column(nullable = false)
+    private Boolean active = true;
 }

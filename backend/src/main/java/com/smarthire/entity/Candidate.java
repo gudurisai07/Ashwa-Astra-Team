@@ -35,7 +35,7 @@ public class Candidate {
 
     // Current resume (metadata + extracted text)
     @Column(length = 255)
-    private String resumeFileName;
+    private String profileImageUrl;
 
     @Column(length = 400)
     private String resumePath;

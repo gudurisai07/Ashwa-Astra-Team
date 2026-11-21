@@ -25,8 +25,13 @@ public class CurrentUserService {
         if (auth == null || auth.getName() == null) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Authentication required");
         }
-        return users.findByEmail(auth.getName())
+        User user = users.findByEmail(auth.getName())
                 .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "User no longer exists"));
+        if (Boolean.FALSE.equals(user.getActive())) {
+            // Deactivated accounts cannot authenticate
+            throw new ApiException(HttpStatus.FORBIDDEN, "Account is deactivated");
+        }
+        return user;
     }
 
     public Candidate candidate() {

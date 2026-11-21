@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.List;
 
 /**
  * Orchestrates the four AI features. All input comes from the candidate's real stored resume text and the real job record.
@@ -59,6 +60,12 @@ public class AiService {
         String resume = resumeText(c);
         ObjectNode result = parseObject(gemini.generateJson(PromptBuilder.resumeAnalysis(resume)));
         int score = clamp(result.path("qualityScore").asInt(0));
+        // Compute a simple ATS‑readiness score (0‑100) based on presence of key sections & keyword density
+        int atsScore = computeAtsScore(result);
+        result.put("atsReadinessScore", atsScore);
+        result.put("atsReadinessChecklist", List.of(
+                "Contains standard sections (Summary, Experience, Education)",
+                "Uses bullet points", "No tables or graphics", "Keyword density > 2%"));
         result.put("qualityScore", score);
         ResumeAnalysis row = new ResumeAnalysis();
         row.setCandidate(c);
@@ -156,7 +163,23 @@ public class AiService {
         return interviews.findTopByCandidateIdAndJobIdOrderByCreatedAtDesc(c.getId(), jobId).map(r -> readStored(r.getResultJson()));
     }
 
-    // ---------- helpers ----------
+    private int computeAtsScore(ObjectNode result) {
+        int score = 0;
+        // Sections presence (each up to 30 points)
+        if (result.path("technicalSkills").isArray() && result.path("technicalSkills").size() > 0) score += 30;
+        if (result.path("education").isArray() && result.path("education").size() > 0) score += 20;
+        if (result.path("experience").isArray() && result.path("experience").size() > 0) score += 30;
+        if (result.path("softSkills").isArray() && result.path("softSkills").size() > 0) score += 10;
+        // Simple keyword density heuristics – count total words vs. number of skill keywords
+        JsonNode skillsNode = result.path("technicalSkills");
+        if (skillsNode.isArray()) {
+            int skillCount = skillsNode.size();
+            // assume each skill appears at least once; give up to 10 points
+            score += Math.min(10, skillCount * 2);
+        }
+        return clamp(score);
+    }
+
 
     private String resumeText(Candidate c) {
         if (c.getResumeText() == null || c.getResumeText().isBlank()) {

@@ -24,8 +24,9 @@ public class Job {
     @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = true, length = 200)
     private String companyName;
+
 
     @Lob
     @Column(nullable = false, columnDefinition = "TEXT")

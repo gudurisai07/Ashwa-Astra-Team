@@ -27,4 +27,9 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     List<Job> findByRecruiterIdOrderByCreatedAtDesc(Long recruiterId);
 
     long countByRecruiterId(Long recruiterId);
+
+    // Admin uses this alias
+    default long countByUserId(Long userId) { return countByRecruiterId(userId); }
+
+    long countByStatus(Job.Status status);
 }

@@ -5,9 +5,10 @@ spring:
   application:
     name: smarthire-backend
   datasource:
-    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/hk_db?
+    url: ${DATASOURCE_URL:jdbc:mysql://localhost:3306/hk_db}
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:12345}
+    driver-class-name: ${DATASOURCE_DRIVER:com.mysql.cj.jdbc.Driver}
   jpa:
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
@@ -31,6 +32,6 @@ smarthire:
   seed-demo-users: ${SEED_DEMO_USERS:true}
   gemini:
     api-key: ${GEMINI_API_KEY:}
-    model: ${GEMINI_MODEL:gemini-3.8-flash}
+    model: ${GEMINI_MODEL:gemini-1.5-flash}
     timeout-ms: ${GEMINI_TIMEOUT_MS:60000}
     max-resume-chars: 12000

@@ -27,7 +27,11 @@ public class ResumeAnalysis {
     private Type analysisType;
 
     /** Resume quality score (0-100) for ANALYSIS rows; null for IMPROVEMENT rows. */
-    private Integer qualityScore;
+    private Integer qualityScore; 
+
+    /** ATS readiness score (0-100) for ANALYSIS rows; null for IMPROVEMENT rows. */
+    @Column(nullable = true)
+    private Integer atsScore;
 
     @Lob
     @Column(nullable = false, columnDefinition = "LONGTEXT")

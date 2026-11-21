@@ -34,6 +34,28 @@ FROM users u WHERE u.email = 'recruiter2@smarthire.demo'
   AND NOT EXISTS (SELECT 1 FROM jobs j WHERE j.title = 'QA Automation Intern' AND j.recruiter_id = u.id);
 
 -- Demo applications. Note: applications need a resume on file to be created through the app; these rows are
+
+INSERT INTO jobs (title, company_name, description, required_skills, experience, salary_range, location, employment_type, recruiter_id, status)
+SELECT 'Machine Learning Engineer', 'Northwind Technologies',
+       'Design and deploy ML models using Python, TensorFlow, and cloud services. Work with data pipelines and model monitoring.',
+       'Python, TensorFlow, PyTorch, SQL, Docker', 2, 'INR 12-20 LPA', 'Hyderabad', 'Full-time', u.id, 'ACTIVE'
+FROM users u WHERE u.email = 'recruiter1@smarthire.demo'
+  AND NOT EXISTS (SELECT 1 FROM jobs j WHERE j.title = 'Machine Learning Engineer' AND j.recruiter_id = u.id);
+
+INSERT INTO jobs (title, company_name, description, required_skills, experience, salary_range, location, employment_type, recruiter_id, status)
+SELECT 'DevOps Engineer', 'Bluepeak Systems',
+       'Maintain CI/CD pipelines, infrastructure as code, and cloud services. Ensure reliability and scalability.',
+       'AWS, Docker, Kubernetes, Jenkins, Terraform', 3, 'INR 10-18 LPA', 'Bengaluru', 'Full-time', u.id, 'ACTIVE'
+FROM users u WHERE u.email = 'recruiter2@smarthire.demo'
+  AND NOT EXISTS (SELECT 1 FROM jobs j WHERE j.title = 'DevOps Engineer' AND j.recruiter_id = u.id);
+
+INSERT INTO jobs (title, company_name, description, required_skills, experience, salary_range, location, employment_type, recruiter_id, status)
+SELECT 'Android Developer', 'Northwind Technologies',
+       'Build native Android applications using Kotlin, MVVM, and modern Android libraries.',
+       'Kotlin, Android SDK, Jetpack, REST, Git', 1, 'INR 7-12 LPA', 'Remote', 'Full-time', u.id, 'ACTIVE'
+FROM users u WHERE u.email = 'recruiter1@smarthire.demo'
+  AND NOT EXISTS (SELECT 1 FROM jobs j WHERE j.title = 'Android Developer' AND j.recruiter_id = u.id);
+-- Demo applications. Note: applications need a resume on file to be created through the app; these rows are
 -- inserted directly so the recruiter dashboard has data. They carry no resume file (download is hidden).
 INSERT INTO applications (candidate_id, job_id, status, cover_note)
 SELECT c.id, j.id, 'PENDING', 'Excited to contribute to your platform team.'

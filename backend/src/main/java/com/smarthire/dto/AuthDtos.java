@@ -14,7 +14,14 @@ public final class AuthDtos {
             @NotBlank @Email @Size(max = 190) String email,
             @NotBlank @Size(min = 8, max = 72, message = "Password must be 8-72 characters") String password,
             @NotNull @Pattern(regexp = "CANDIDATE|RECRUITER", message = "Role must be CANDIDATE or RECRUITER") String role,
-            @Size(max = 150) String companyName) {}
+            @Size(max = 150) String companyName,
+            // Candidate‑profile fields (optional for recruiters)
+            @Size(max = 30) String phone,
+            @Size(max = 200) String headline,
+            @Size(max = 150) String location,
+            Integer experienceYears,
+            @Size(max = 1000) String skills,
+            @Size(max = 255) String profileImageUrl) {}
 
     public record LoginRequest(@NotBlank @Email String email, @NotBlank String password) {}
 
