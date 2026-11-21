@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: smarthire-backend
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/hk_db?
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:12345}
+  jpa:
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+smarthire:
+  jwt:
+    # Provide a long random value (>= 32 chars) via JWT_SECRET. The default is for local development only.
+    secret: ${JWT_SECRET:dev-only-change-me-dev-only-change-me-0123456789}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  upload-dir: ${UPLOAD_DIR:uploads}
+  max-resume-bytes: 5242880
+  cors-origins: ${CORS_ORIGINS:http://localhost:5173}
+  seed-demo-users: ${SEED_DEMO_USERS:true}
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-3.8-flash}
+    timeout-ms: ${GEMINI_TIMEOUT_MS:60000}
+    max-resume-chars: 12000

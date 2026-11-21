@@ -1,0 +1,10 @@
+target/
+.env
+.env.*
+!.env.example
+application-local.yml
+uploads/*
+!uploads/.gitkeep
+*.iml
+.idea/
+.vscode/
