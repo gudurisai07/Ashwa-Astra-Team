@@ -8,12 +8,14 @@ spring:
     url: ${DATASOURCE_URL:jdbc:mysql://localhost:3306/hk_db}
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:12345}
-    # Auto-detected from URL when empty (com.mysql.cj.jdbc.Driver or org.postgresql.Driver)
-    driver-class-name: ${DATASOURCE_DRIVER:com.mysql.cj.jdbc.Driver}
+    driver-class-name: ${DATASOURCE_DRIVER:}
   jpa:
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
     open-in-view: false
+    properties:
+      hibernate:
+        dialect: ${HIBERNATE_DIALECT:}
   servlet:
     multipart:
       max-file-size: 5MB
