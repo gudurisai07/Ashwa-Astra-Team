@@ -256,6 +256,12 @@ export default function ResumeImprovement() {
             {/* Quick action chips */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.8rem' }}>
               <button
+                onClick={() => handleSendChat("Tailor my resume for a Java Full Stack Developer role with Spring Boot and React")}
+                style={{ background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2))', border: '1px solid rgba(168, 85, 247, 0.4)', color: '#c084fc', fontSize: '0.75rem', padding: '0.3rem 0.6rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}
+              >
+                ☕ Java Full Stack
+              </button>
+              <button
                 onClick={() => handleSendChat("Rewrite my professional summary to be more impactful and senior-level")}
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#cbd5e1', fontSize: '0.75rem', padding: '0.3rem 0.6rem', borderRadius: '0.5rem', cursor: 'pointer' }}
               >
