@@ -3,8 +3,18 @@ import axios from 'axios';
 export const TOKEN_KEY = 'smarthire_token';
 export const USER_KEY = 'smarthire_user';
 
+// Normalize baseURL so it always targets /api correctly even if trailing /api is omitted in Vercel env
+function getBaseUrl() {
+  const envUrl = (import.meta.env.VITE_API_URL || '').trim();
+  if (!envUrl) {
+    return 'http://localhost:8081/api';
+  }
+  const clean = envUrl.replace(/\/+$/, '');
+  return clean.endsWith('/api') ? clean : `${clean}/api`;
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8081/api',
+  baseURL: getBaseUrl(),
   timeout: 90000,
 });
 
@@ -29,7 +39,9 @@ api.interceptors.response.use(
 
 /** Turns any axios error into a readable message. */
 export function errorMessage(err, fallback = 'Something went wrong. Please try again.') {
-  if (err?.code === 'ERR_NETWORK') return 'Cannot reach the server. Is the backend running on port 8080?';
+  if (err?.code === 'ERR_NETWORK') {
+    return 'Cannot reach backend server. If using Render, the free instance might be waking up (please wait 30 seconds and retry) or check that VITE_API_URL is configured in Vercel settings.';
+  }
   const data = err?.response?.data;
   if (data?.details && typeof data.details === 'object') {
     const first = Object.values(data.details)[0];
