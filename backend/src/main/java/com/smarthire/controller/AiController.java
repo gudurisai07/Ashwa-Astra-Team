@@ -29,6 +29,13 @@ public class AiController {
         return ai.interviewQuestions(jobId);
     }
 
+    public record ResumeChatRequest(String message, String currentResumeText) {}
+
+    @PostMapping("/resume-chat")
+    public JsonNode resumeChat(@RequestBody ResumeChatRequest req) {
+        return ai.chatEditResume(req.message(), req.currentResumeText());
+    }
+
     @PostMapping("/resume-improvement")
     public JsonNode improve() {
         return ai.improveResume();

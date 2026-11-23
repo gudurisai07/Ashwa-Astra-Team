@@ -13,6 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CurrentUserService {
+    private Candidate testCandidate;
+
+    /**
+     * Test‑only setter used by {@code ResumeServiceUploadTest} to bypass security.
+     */
+    public void setTestCandidate(Candidate candidate) {
+        this.testCandidate = candidate;
+    }
+
     private final UserRepository users;
     private final CandidateRepository candidates;
 
@@ -36,6 +45,10 @@ public class CurrentUserService {
 
     @Transactional
     public Candidate candidate() {
+        // If a test candidate has been injected, use it directly (test only).
+        if (this.testCandidate != null) {
+            return this.testCandidate;
+        }
         User u = user();
         if (u.getRole() != User.Role.CANDIDATE) {
             throw ApiException.forbidden("Candidate account required");

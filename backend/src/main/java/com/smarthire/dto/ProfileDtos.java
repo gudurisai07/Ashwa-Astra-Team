@@ -19,5 +19,9 @@ public final class ProfileDtos {
             Long candidateId, String fullName, String email, String phone, String headline,
             String location, Integer experienceYears, String skills,
             boolean hasResume, String resumeFileName, Long resumeSizeBytes,
-            Integer resumeTextLength, LocalDateTime resumeUploadedAt) {}
+            Integer resumeTextLength, LocalDateTime resumeUploadedAt) {
+        public boolean resumeUploaded() {
+            return hasResume;
+        }
+    }
 }

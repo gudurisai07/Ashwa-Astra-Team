@@ -94,6 +94,19 @@ public class ResumeService {
     }
 
     @Transactional(readOnly = true)
+    public String getResumeText() {
+        Candidate c = current.candidate();
+        return c.getResumeText() == null ? "" : c.getResumeText();
+    }
+
+    @Transactional
+    public ResumeResponse updateResumeText(String text) {
+        Candidate c = current.candidate();
+        c.setResumeText(text);
+        return toResponse(candidates.save(c));
+    }
+
+    @Transactional(readOnly = true)
     public ResumeResponse mine() {
         return toResponse(current.candidate());
     }

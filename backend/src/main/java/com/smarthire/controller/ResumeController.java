@@ -27,6 +27,18 @@ public class ResumeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(resumes.upload(file));
     }
 
+    public record ResumeTextRequest(String text) {}
+
+    @GetMapping("/text")
+    public java.util.Map<String, String> getResumeText() {
+        return java.util.Map.of("text", resumes.getResumeText());
+    }
+
+    @PutMapping("/text")
+    public ResumeResponse updateResumeText(@RequestBody ResumeTextRequest req) {
+        return resumes.updateResumeText(req.text() == null ? "" : req.text());
+    }
+
     @GetMapping("/my")
     public ResumeResponse my() {
         return resumes.mine();

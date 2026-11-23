@@ -29,11 +29,25 @@ public class ResumeServiceUploadTest {
 
     @Test
     public void testUploadValidPdf() throws Exception {
-        // Ensure a candidate is logged in (use first candidate)
         Candidate any = candidateRepository.findAll().stream().findFirst().orElseThrow();
-        currentUserService.setTestCandidate(any); // assuming a method for test, else skip
-        Path pdfPath = Paths.get("C:/Users/asus0/Downloads/SmartHire_Recuriment/SmartHire_Recuriment/test.pdf");
-        MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", new FileInputStream(pdfPath.toFile()));
+        currentUserService.setTestCandidate(any);
+
+        byte[] pdfBytes;
+        try (org.apache.pdfbox.pdmodel.PDDocument doc = new org.apache.pdfbox.pdmodel.PDDocument()) {
+            org.apache.pdfbox.pdmodel.PDPage page = new org.apache.pdfbox.pdmodel.PDPage();
+            doc.addPage(page);
+            try (org.apache.pdfbox.pdmodel.PDPageContentStream cs = new org.apache.pdfbox.pdmodel.PDPageContentStream(doc, page)) {
+                cs.beginText();
+                cs.setFont(new org.apache.pdfbox.pdmodel.font.PDType1Font(org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA), 12);
+                cs.showText("John Doe - Software Engineer Resume");
+                cs.endText();
+            }
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            doc.save(baos);
+            pdfBytes = baos.toByteArray();
+        }
+
+        MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", pdfBytes);
         ResumeResponse resp = resumeService.upload(file);
         Assertions.assertTrue(resp.resumeUploaded());
     }
