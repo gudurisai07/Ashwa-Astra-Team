@@ -47,11 +47,17 @@ public class DatabaseConfig implements HibernatePropertiesCustomizer {
         String user = rawUsername != null ? rawUsername.trim() : "root";
         String pass = rawPassword != null ? rawPassword.trim() : "12345";
 
-        boolean isSupabase = url.toLowerCase().contains("supabase.co") || url.toLowerCase().contains("supabase");
+        boolean isSupabase = url.toLowerCase().contains("supabase.co") || url.toLowerCase().contains("supabase") || (user != null && user.toLowerCase().contains("supabase"));
         boolean isPostgres = isSupabase || url.toLowerCase().contains("postgres");
 
-        // 1. Handle Supabase URLs (including dashboard URLs like https://mizoiaobwoqsinhqyqxh.supabase.co)
-        if (isSupabase) {
+        // Auto-fix verified Tokyo Pooler for project mizoiaobwoqsinhqyqxh
+        if (url.contains("mizoiaobwoqsinhqyqxh") || (user != null && user.contains("mizoiaobwoqsinhqyqxh"))) {
+            log.info("Auto-routing to verified Supabase Tokyo Pooler for project mizoiaobwoqsinhqyqxh on port 6543...");
+            url = "jdbc:postgresql://aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?sslmode=require&prepareThreshold=0";
+            user = "postgres.mizoiaobwoqsinhqyqxh";
+            isPostgres = true;
+            isSupabase = true;
+        } else if (isSupabase) {
             log.info("Detected Supabase environment. Normalizing connection parameters...");
 
             // If user supplied https://<ref>.supabase.co or <ref>.supabase.co
