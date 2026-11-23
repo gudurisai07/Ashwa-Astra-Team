@@ -13,14 +13,17 @@ import org.springframework.context.annotation.Primary;
 import javax.sql.DataSource;
 import java.net.URI;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Robust, universal database configuration supporting Supabase (PostgreSQL),
+ * Universal, auto-healing database configuration supporting Supabase (PostgreSQL),
  * MySQL, and cloud connection strings with automatic dialect resolution.
  */
 @Configuration
 public class DatabaseConfig implements HibernatePropertiesCustomizer {
     private static final Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
+    private static final Pattern SUPABASE_REF_PATTERN = Pattern.compile("([a-z0-9]{15,30})\\.supabase\\.co");
 
     @Value("${spring.datasource.url:jdbc:mysql://localhost:3306/hk_db}")
     private String rawUrl;
@@ -44,14 +47,38 @@ public class DatabaseConfig implements HibernatePropertiesCustomizer {
         String user = rawUsername != null ? rawUsername.trim() : "root";
         String pass = rawPassword != null ? rawPassword.trim() : "12345";
 
-        // 1. Convert standard URI format (e.g. postgresql://user:pass@host:port/dbname)
+        boolean isSupabase = url.toLowerCase().contains("supabase.co") || url.toLowerCase().contains("supabase");
+        boolean isPostgres = isSupabase || url.toLowerCase().contains("postgres");
+
+        // 1. Handle Supabase URLs (including dashboard URLs like https://mizoiaobwoqsinhqyqxh.supabase.co)
+        if (isSupabase) {
+            log.info("Detected Supabase environment. Normalizing connection parameters...");
+
+            // If user supplied https://<ref>.supabase.co or <ref>.supabase.co
+            Matcher matcher = SUPABASE_REF_PATTERN.matcher(url);
+            if (matcher.find()) {
+                String projectRef = matcher.group(1);
+                // If it doesn't already contain db. or a port, construct the correct DB endpoint
+                if (!url.contains("db." + projectRef) && !url.contains(":5432") && !url.contains(":6543")) {
+                    log.info("Converting Supabase project URL to direct PostgreSQL endpoint for ref: {}", projectRef);
+                    url = "jdbc:postgresql://db." + projectRef + ".supabase.co:5432/postgres?sslmode=require";
+                }
+            }
+
+            // If username is still default root or empty, set to Supabase default postgres
+            if (user.isBlank() || "root".equalsIgnoreCase(user)) {
+                user = "postgres";
+            }
+        }
+
+        // 2. Parse standard URI format (e.g. postgresql://user:pass@host:port/dbname)
         if (url.startsWith("postgres://") || url.startsWith("postgresql://")) {
             try {
                 URI uri = URI.create(url);
                 String userInfo = uri.getUserInfo();
                 if (userInfo != null && userInfo.contains(":")) {
                     String[] parts = userInfo.split(":", 2);
-                    if (user.isBlank() || "root".equals(user)) {
+                    if (user.isBlank() || "root".equals(user) || "AshwaAstra".equalsIgnoreCase(user)) {
                         user = parts[0];
                     }
                     if (pass.isBlank() || "12345".equals(pass)) {
@@ -61,6 +88,9 @@ public class DatabaseConfig implements HibernatePropertiesCustomizer {
                 String host = uri.getHost();
                 int port = uri.getPort() == -1 ? 5432 : uri.getPort();
                 String path = uri.getPath();
+                if (path == null || path.isBlank() || "/".equals(path)) {
+                    path = "/postgres";
+                }
                 url = "jdbc:postgresql://" + host + ":" + port + path;
                 String query = uri.getQuery();
                 if (query != null && !query.isBlank()) {
@@ -68,37 +98,43 @@ public class DatabaseConfig implements HibernatePropertiesCustomizer {
                 }
             } catch (Exception e) {
                 log.warn("Failed to parse postgres URI [{}]: {}", url, e.getMessage());
-                if (!url.startsWith("jdbc:")) {
-                    url = "jdbc:" + url;
-                }
             }
         }
 
-        // 2. Ensure JDBC prefix
+        // Strip any accidental http:// or https:// from inside the URL
+        url = url.replace("jdbc:mysql://https://", "jdbc:postgresql://")
+                 .replace("jdbc:mysql://http://", "jdbc:postgresql://")
+                 .replace("jdbc:postgresql://https://", "jdbc:postgresql://")
+                 .replace("jdbc:postgresql://http://", "jdbc:postgresql://")
+                 .replace("https://", "")
+                 .replace("http://", "");
+
+        // 3. Ensure proper JDBC prefix based on DB type
         if (!url.startsWith("jdbc:")) {
-            if (url.contains("postgres")) {
+            if (isPostgres) {
                 url = "jdbc:postgresql://" + url;
             } else {
                 url = "jdbc:mysql://" + url;
             }
+        } else if (isPostgres && url.startsWith("jdbc:mysql:")) {
+            // Fix driver/protocol mismatch
+            url = "jdbc:postgresql:" + url.substring("jdbc:mysql:".length());
         }
 
-        // 3. For Supabase PostgreSQL, enforce SSL
-        if (url.contains("supabase.co") && !url.contains("sslmode=")) {
+        // 4. For Supabase or PostgreSQL cloud instances, enforce SSL
+        if (isPostgres && !url.contains("sslmode=")) {
             url += (url.contains("?") ? "&" : "?") + "sslmode=require";
         }
 
-        // 4. Determine driver class name
+        // 5. Select proper JDBC Driver
         String driver = rawDriverClassName != null ? rawDriverClassName.trim() : "";
-        if (driver.isBlank()) {
-            if (url.contains(":postgresql:")) {
-                driver = "org.postgresql.Driver";
-            } else {
-                driver = "com.mysql.cj.jdbc.Driver";
-            }
+        if (isPostgres) {
+            driver = "org.postgresql.Driver";
+        } else if (driver.isBlank()) {
+            driver = "com.mysql.cj.jdbc.Driver";
         }
 
-        log.info("Initialized DataSource: driver=[{}], url=[{}], username=[{}]", driver, maskUrl(url), user);
+        log.info("Final Initialized DataSource -> Driver: [{}], URL: [{}], User: [{}]", driver, maskUrl(url), user);
 
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(url);
@@ -124,7 +160,9 @@ public class DatabaseConfig implements HibernatePropertiesCustomizer {
         }
 
         String url = rawUrl != null ? rawUrl.toLowerCase().trim() : "";
-        if (url.contains("postgres")) {
+        boolean isPostgres = url.contains("supabase") || url.contains("postgres");
+
+        if (isPostgres) {
             log.info("Auto-setting Hibernate dialect to: org.hibernate.dialect.PostgreSQLDialect");
             hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         } else {
