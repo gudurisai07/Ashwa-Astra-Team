@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   application:
@@ -28,11 +28,11 @@ smarthire:
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
   upload-dir: ${UPLOAD_DIR:uploads}
   max-resume-bytes: 5242880
-  cors-origins: ${CORS_ORIGINS:http://localhost:5173}
+  cors-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:8081,https://*.vercel.app,*}
   seed-demo-users: ${SEED_DEMO_USERS:true}
   gemini:
     api-key: ${GEMINI_API_KEY:}
-    model: ${GEMINI_MODEL:gemini-3.8-flash}
+    model: ${GEMINI_MODEL:gemini-2.0-flash}
     timeout-ms: ${GEMINI_TIMEOUT_MS:10000}
     max-resume-chars: 12000
   openai:

@@ -4,8 +4,8 @@ export const TOKEN_KEY = 'smarthire_token';
 export const USER_KEY = 'smarthire_user';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
-  timeout: 90000, // AI calls can take a while
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8081/api',
+  timeout: 90000,
 });
 
 api.interceptors.request.use((config) => {
