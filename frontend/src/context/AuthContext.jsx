@@ -17,11 +17,27 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(readUser);
 
   const persist = useCallback((data) => {
-    const u = { id: data.userId, fullName: data.fullName, email: data.email, role: data.role };
+    const u = {
+      id: data.userId,
+      fullName: data.fullName,
+      email: data.email,
+      role: data.role,
+      profileImageUrl: data.profileImageUrl,
+      companyName: data.companyName,
+    };
     localStorage.setItem(TOKEN_KEY, data.token);
     localStorage.setItem(USER_KEY, JSON.stringify(u));
     setUser(u);
     return u;
+  }, []);
+
+  const updateUser = useCallback((partial) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, ...partial };
+      localStorage.setItem(USER_KEY, JSON.stringify(updated));
+      return updated;
+    });
   }, []);
 
   const login = useCallback(async (email, password) => persist(await authApi.login({ email, password })), [persist]);
@@ -32,7 +48,7 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
-  const value = useMemo(() => ({ user, login, register, logout }), [user, login, register, logout]);
+  const value = useMemo(() => ({ user, login, register, logout, updateUser }), [user, login, register, logout, updateUser]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

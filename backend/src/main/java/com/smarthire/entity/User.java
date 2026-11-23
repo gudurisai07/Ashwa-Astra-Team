@@ -33,6 +33,9 @@ public class User {
     @Column(length = 150)
     private String companyName;
 
+    @Column(length = 500)
+    private String profileImageUrl;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

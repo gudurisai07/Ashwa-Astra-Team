@@ -49,7 +49,7 @@ public class Candidate {
     private Long resumeSizeBytes;
 
     @Lob
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String resumeText;
 
     private LocalDateTime resumeUploadedAt;

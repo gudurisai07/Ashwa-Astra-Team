@@ -30,7 +30,7 @@ public class JobMatch {
     private Integer matchPercentage;
 
     @Lob
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String resultJson;
 
     @Column(length = 100)
