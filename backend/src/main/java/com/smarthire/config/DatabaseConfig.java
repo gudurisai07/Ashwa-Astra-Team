@@ -121,9 +121,14 @@ public class DatabaseConfig implements HibernatePropertiesCustomizer {
             url = "jdbc:postgresql:" + url.substring("jdbc:mysql:".length());
         }
 
-        // 4. For Supabase or PostgreSQL cloud instances, enforce SSL
-        if (isPostgres && !url.contains("sslmode=")) {
-            url += (url.contains("?") ? "&" : "?") + "sslmode=require";
+        // 4. For Supabase or PostgreSQL cloud instances, enforce SSL and pooler compatibility
+        if (isPostgres) {
+            if (!url.contains("sslmode=")) {
+                url += (url.contains("?") ? "&" : "?") + "sslmode=require";
+            }
+            if (url.contains("pooler.supabase.com") && !url.contains("prepareThreshold=")) {
+                url += "&prepareThreshold=0";
+            }
         }
 
         // 5. Select proper JDBC Driver
